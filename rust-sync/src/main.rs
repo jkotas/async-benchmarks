@@ -1,31 +1,43 @@
 use std::time::Instant;
 use std::thread;
 
+const THRESHOLD: u32 = 1_000;
+
 fn main() {
     for _ in 1..10 {
         let start = Instant::now();
 
-        let result = a(100000);
+        let result = a(100_000_000);
 
         println!("{} ms result={}", start.elapsed().as_millis(), result);
     }
 }
 
-fn a(n: i32) -> i32 {
-    let mut result: i32 = 1;
-    for i in 1..n {
-        result = (result + i) * b(i);
+fn a(n: u32) -> u32 {
+    let mut result: u32 = n;
+    for _ in 0..n {
+        result = b(result);
     }
     return result;
 }
 
-fn b(n: i32) -> i32 {
-    let mut result: i32 = 0;
-    for i in 1..n {
-        if result == 1_000_000 {
-            thread::yield_now();
-        }
-        result += i * i;
+fn b(n: u32) -> u32 {
+    let mut result: u32 = n;
+
+    result = result * 1_999_999_981;
+    if result < THRESHOLD {
+        thread::yield_now();
     }
+
+    result = result * 1_999_999_981;
+    if result < THRESHOLD {
+        thread::yield_now();
+    }
+
+    result = result * 1_999_999_981;
+    if result < THRESHOLD {
+        thread::yield_now();
+    }
+
     return result;
 }

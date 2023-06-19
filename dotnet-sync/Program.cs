@@ -1,30 +1,44 @@
 ﻿using System.Diagnostics;
 using System.Threading;
+using System.Runtime.CompilerServices;
+
+const uint Threshold = 1_000;
 
 for (int i = 0; i < 10; i++)
 {
     var sw = new Stopwatch();
     sw.Start();
-    int result = A(100000);
+    uint result = A(100_000_000);
     Console.WriteLine($"{sw.ElapsedMilliseconds} ms result={result}");
 }
 
-static int A(int n)
+static uint A(uint n)
 {
-    int result = 1;
-    for (int i = 1; i < n; i++)
-        result = (result + i) * B(i);
+    uint result = n;
+    for (uint i = 0; i < n; i++)
+        result = B(result);
     return result;
 }
 
-static int B(int n)
+static uint B(uint n)
 {
-    int result = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (result == 1_000_000)
-            Thread.Yield();
-        result += i * i;
-    }
+    uint result = n;
+
+    result = result * 1_999_999_981;
+    if (result < Threshold)
+        MyYield();
+
+    result = result * 1_999_999_981;
+    if (result < Threshold)
+        MyYield();
+
+    result = result * 1_999_999_981;
+    if (result < Threshold)
+        MyYield();
+
     return result;
 }
+
+// Workaround for inlining of Thread.Yield inflating the caller's frame.
+[MethodImpl(MethodImplOptions.NoInlining)]
+static void MyYield() => Thread.Yield();

@@ -1,29 +1,39 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
+const uint Threshold = 1_000;
 
 for (int i = 0; i < 10; i++)
 {
     var sw = new Stopwatch();
     sw.Start();
-    int result = await A(100000);
+    uint result = await A(100_000_000);
     Console.WriteLine($"{sw.ElapsedMilliseconds} ms result={result}");
 }
 
-static async ValueTask<int> A(int n)
+static async ValueTask<uint> A(uint n)
 {
-    int result = 1;
-    for (int i = 1; i < n; i++)
-        result = (result + i) * await B(i);
+    uint result = n;
+    for (uint i = 0; i < n; i++)
+        result = await B(result);
     return result;
 }
 
-static async ValueTask<int> B(int n)
+static async ValueTask<uint> B(uint n)
 {
-    int result = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (result == 1_000_000)
-            await Task.Yield();
-        result += i * i;
-    }
+    uint result = n;
+
+    result = result * 1_999_999_981;
+    if (result < Threshold)
+        await Task.Yield();
+
+    result = result * 1_999_999_981;
+    if (result < Threshold)
+        await Task.Yield();
+
+    result = result * 1_999_999_981;
+    if (result < Threshold)
+        await Task.Yield();
+
     return result;
 }
