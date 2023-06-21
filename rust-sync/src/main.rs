@@ -1,7 +1,7 @@
 use std::time::Instant;
 use std::thread;
 
-const THRESHOLD: u32 = 1_000;
+const THRESHOLD: u32 = 20_000_000;
 
 fn main() {
     for _ in 1..10 {

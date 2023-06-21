@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-const uint Threshold = 1_000;
+const uint Threshold = 20_000_000;
 
 for (int i = 0; i < 10; i++)
 {

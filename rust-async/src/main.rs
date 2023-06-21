@@ -1,6 +1,6 @@
 use std::time::Instant;
 
-const THRESHOLD: u32 = 1_000;
+const THRESHOLD: u32 = 20_000_000;
 
 #[tokio::main]
 async fn main() {
